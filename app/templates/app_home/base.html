@@ -1,0 +1,102 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Block Chain</title>
+    <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/popper.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+	<link rel="stylesheet" href='{% static "css/bootstrap.min.css" %}'/>
+    <style type="text/css">
+        .toggcss{
+            display: block !important;
+        }
+    </style>
+</head>
+<body style="background: #f2f2f2;">
+{% csrf_token %}
+    <div class="dropdown" align="center" style="margin-top: 20px;">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Block Chain
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="#" onclick="switch_function(1)" id="create_block_dropdown">Create</a>
+        <a class="dropdown-item" href="#" onclick="switch_function(2)">Hack</a>
+{#        <a class="dropdown-item" href="#">Something else here</a>#}
+      </div>
+    </div>
+    {% block content %}{% endblock content %}
+<script type="text/javascript">
+    let tog = 1;
+    function switch_function(para) {
+        tog = para;
+        // alert(tog);
+        if (tog == 1){
+            $('#dropdownMenuButton').html('Create');
+            $('#create_block_add_btn').css('display', 'block');
+            $('.ledger_table').css('display', 'none');
+            // alert('here');
+        } else {
+            $('#dropdownMenuButton').html('Hack Block');
+            $('#create_block_add_btn').css('display', 'none');
+            $('.ledger_table').css('display', 'block');
+        }
+
+    }
+    function add_blockchain() {
+        $('#add_block').css('display', 'block');
+    }
+    function create_blockchain() {
+         var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+         var data = $('#blockchain_data').val();
+        // alert(messageInputDom);
+       $.ajax({
+                    url: '/database/',
+                    type: 'POST',
+                    data: {
+                        'csrfmiddlewaretoken': csrftoken,
+                        'data': data,
+                    },
+                    error: function () {
+                        alert('Could not connect to server...');
+                    },
+                    success: function (response_ds) {
+                        // alert(response_ds);
+                        window.location.href = '';
+                    }
+                });
+    }
+    function hack_blockchain_block(blockchain_id, block_number) {
+         var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+         var data = $('#hack_blockchain_data_'+block_number).val();
+        // alert(messageInputDom);
+       $.ajax({
+                    url: '/hack_database/',
+                    type: 'POST',
+                    data: {
+                        'csrfmiddlewaretoken': csrftoken,
+                        'data': data,
+                        'id': blockchain_id
+                    },
+                    error: function () {
+                        alert('Could not connect to server...');
+                    },
+                    success: function (response_ds) {
+                        alert(response_ds);
+                        if (response_ds === "HACKING ATTEMPT - chain broken"){
+                            $('#chain_link_'+ (block_number-1)).attr('src', '{% static "images/broken.png" %}');
+                            $('#create_block_dropdown').css('display', 'none');
+                        }
+                    }
+                });
+    }
+    function display_div_ledger(div_number) {
+        $('#di_ledger_'+div_number).toggleClass("toggcss");
+        // alert( $('#di_ledger_'+div_number).length);
+    }
+</script>
+
+
+</body>
+</html>

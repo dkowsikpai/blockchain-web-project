@@ -1,0 +1,48 @@
+{% extends 'app_home/base.html' %}
+{% load staticfiles %}
+{% block content %}
+    <div align="center">
+    {% for i in data %}
+        <img src="{% static 'images/cube.png' %}" title="{{ i.data }}" onclick="display_div_ledger({{ forloop.counter }})" style="position: relative; z-index: 100; cursor: pointer;">
+            <section style="width:80%; height: 30%; display: none; position: relative; z-index: 200; background: #fefefe; border: #32383e solid 1px; border-radius: 5px;" id="di_ledger_{{ forloop.counter }}">
+                <table class="table table-striped table-hover table-light">
+                    <thead class="thead-dark">
+                        <tr>
+                          <th scope="col">Ledger</th>
+                        </tr>
+                      </thead>
+                     <tbody>
+                        <tr>
+                          <th scope="row">Block {{ forloop.counter }}</th>
+                        </tr>
+                        <tr>
+                          <th scope="row">Data: {{ i.data }}</th>
+                        </tr>
+                        <tr>
+                          <th scope="row">Previous Hash: {{ i.previousHash }}</th>
+                        </tr>
+                        <tr>
+                          <th scope="row">Hash: {{ i.hash }}</th>
+                        </tr>
+                        <tr>
+                          <th scope="row" align="center" style="display: none;" class="ledger_table">
+                              <input type="text" class="form-control" maxlength="200" id="hack_blockchain_data_{{ forloop.counter }}" style="width:80%; display: inline;" placeholder="Change te data of block chain">
+                              <button class="btn btn-danger" onclick="hack_blockchain_block({{ i.id }}, {{ forloop.counter }})">Hack this Block</button>
+                          </th>
+                        </tr>
+                     </tbody>
+                </table>
+
+
+            </section>
+        <img src="{% static 'images/icon2.png' %}" title="{{ i.hash }}" style="width: 50px; height: 50px; position: relative; z-index: 100" id="chain_link_{{ forloop.counter }}">
+    {% endfor %}
+        <img src="{% static 'images/add.png' %}" alt="cube" style="width: 50px; height: 50px; cursor: pointer; display: none;" onclick="add_blockchain()" id="create_block_add_btn">
+    </div>
+    <br><br>
+    <div id="add_block" align="center" style="display: none; border: #343a40 solid 1px; width: 80%; margin: auto; padding: 20px; border-radius: 5px;">
+    <label for="blockchain_data">Blockchain Data</label>
+        <input type="text" class="form-control" maxlength="200" id="blockchain_data" placeholder="Enter the data to be stored in block chain"><br>
+        <button class="btn btn-primary" onclick="create_blockchain()">Create</button>
+    </div>
+{% endblock content %}
